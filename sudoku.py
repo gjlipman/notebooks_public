@@ -6,11 +6,26 @@
 import itertools
 
 
+def whatcanitbe(row, col):
+    if sudoku[row][col]==0:    
+        rowvals = set(sudoku[row])
+        colvals = {row[col] for row in sudoku}
+        boxrow = int(row/3)*3
+        boxcol = int(col/3)*3
+        boxvals = [row[boxcol:boxcol+3] 
+                        for row in sudoku[boxrow:boxrow+3]]
+        boxvals = set(boxvals[0] + boxvals[1] + boxvals[2])
+        return list({1,2,3,4,5,6,7,8,9} 
+                      - rowvals - colvals - boxvals)
+    else:
+        return [sudoku[row][col]]
+
+
 def preparesudoku():
     global sudoku
-    sudoku = [[[cell] if cell>0 else [1,2,3,4,5,6,7,8,9] 
-                 for cell in row ]
-                    for row in sudoku]
+    sudoku = [[whatcanitbe(row, col) 
+                 for col in range(9) ]
+                    for row in range(9)]
 
 def maxdigits():
     return max([max([len(col) for col in row]) for row in sudoku])
